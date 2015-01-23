@@ -77,6 +77,7 @@ docs = \
 	INSTALL.KVM.md \
 	INSTALL.Libvirt.md \
 	INSTALL.NetBSD.md \
+	INSTALL.OSX.md \
 	INSTALL.RHEL.md \
 	INSTALL.SSL.md \
 	INSTALL.XenServer.md \
