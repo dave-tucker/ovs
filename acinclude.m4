@@ -699,3 +699,30 @@ AC_DEFUN([OVS_CHECK_LINUX_HOST],
         [ovs_cv_linux=true],
         [ovs_cv_linux=false])])
    AM_CONDITIONAL([LINUX], [$ovs_cv_linux])])
+
+dnl OVS_CHECK_HTONLL
+dnl
+dnl Checks whether the he htonll function is defined in arpa/inet.h
+dnl Adpated from librabbitmq
+AC_DEFUN([OVS_CHECK_HTONLL],
+  [AC_MSG_CHECKING([whether htonll is defined])
+   AC_LINK_IFELSE(
+     [AC_LANG_PROGRAM(
+       [[
+         #include <arpa/inet.h>
+       ]],
+       [[
+         return htonll(0);
+       ]]
+     )],
+     [
+       AC_MSG_RESULT(yes)
+       AC_DEFINE(
+         [HAVE_HTONLL], [1],
+         [Define to 1 if the function (or macro) htonll exists.])
+     ],
+     [
+       AC_MSG_RESULT(no)
+     ]
+)])
+

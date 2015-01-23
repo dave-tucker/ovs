@@ -365,12 +365,14 @@ lib_libopenvswitch_la_SOURCES += \
 endif
 
 if HAVE_IF_DL
+if !OSX
 lib_libopenvswitch_la_SOURCES += \
 	lib/netdev-bsd.c \
 	lib/rtbsd.c \
 	lib/rtbsd.h \
 	lib/route-table-bsd.c
-endif
+endif # !OSX
+endif # HAVE_IF_DL
 
 if HAVE_OPENSSL
 lib_libopenvswitch_la_SOURCES += lib/stream-ssl.c

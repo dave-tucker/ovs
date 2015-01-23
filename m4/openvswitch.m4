@@ -70,6 +70,16 @@ AC_DEFUN([OVS_CHECK_ESX],
       AC_DEFINE([ESX], [1], [Define to 1 if building on ESX.])
    fi])
 
+dnl Checks for OSX
+AC_DEFUN([OVS_CHECK_OSX],
+  [AC_CHECK_HEADER([MacTypes.h],
+                   [OSX=yes],
+                   [OSX=no])
+   AM_CONDITIONAL([OSX], [test "$OSX" = yes])
+   if test "$OSX" = yes; then
+      AC_DEFINE([OSX], [1], [Define to 1 if building on Mac OSX.])
+   fi])
+
 dnl Checks for WINDOWS.
 AC_DEFUN([OVS_CHECK_WIN32],
   [AC_CHECK_HEADER([windows.h],
