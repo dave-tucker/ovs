@@ -120,14 +120,16 @@ set_dscp(int fd, uint8_t dscp)
     success = false;
     val = dscp << 2;
     if (setsockopt(fd, IPPROTO_IP, IP_TOS, &val, sizeof val)) {
-        if (sock_errno() != ENOPROTOOPT) {
+        /* EINVAL returned by OSX when socket is AF_INET */
+        if (sock_errno() != ENOPROTOOPT && sock_errno() != EINVAL) {
             return sock_errno();
         }
     } else {
         success = true;
     }
     if (setsockopt(fd, IPPROTO_IPV6, IPV6_TCLASS, &val, sizeof val)) {
-        if (sock_errno() != ENOPROTOOPT) {
+        /* EINVAL returned by OSX when socket is AF_INET */
+        if (sock_errno() != ENOPROTOOPT && sock_errno() != EINVAL) {
             return sock_errno();
         }
     } else {

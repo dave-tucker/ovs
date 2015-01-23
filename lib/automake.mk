@@ -335,6 +335,11 @@ lib_libopenvswitch_la_SOURCES += \
 	lib/route-table.h
 endif
 
+if OSX
+lib_libopenvswitch_la_SOURCES += \
+	lib/route-table-stub.c
+endif
+
 if DPDK_NETDEV
 lib_libopenvswitch_la_SOURCES += \
        lib/netdev-dpdk.c \

@@ -56,6 +56,15 @@ typedef unsigned int clockid_t;
 const static unsigned long long unix_epoch = 116444736000000000;
 #endif /* _WIN32 */
 
+#ifdef  __APPLE__
+typedef unsigned int clockid_t;
+int clock_gettime(clock_t id, struct timespec *ts);
+
+#define CLOCK_MONOTONIC 0
+#define CLOCK_REALTIME 0
+
+#endif /* __APPLE__ */
+
 /* Structure set by unixctl time/warp command. */
 struct large_warp {
     struct unixctl_conn *conn; /* Connection waiting for warp response. */
@@ -416,6 +425,29 @@ clock_gettime(clock_t id, struct timespec *ts)
     return 0;
 }
 #endif /* _WIN32 */
+
+#ifdef __APPLE__
+/* clock_gettime for Apple OSX
+ * This implemntation relies on gettimeofday()
+ * OSX does not distiguish between real-time and monotoic time
+ */
+int
+clock_gettime(clock_t id, struct timespec *ts)
+{
+    if (id == CLOCK_REALTIME || CLOCK_MONOTONIC) {
+        struct timeval now;
+        int rv = gettimeofday(&now, NULL);
+        if (rv) {
+            return rv;
+        }
+        ts->tv_sec  = now.tv_sec;
+        ts->tv_nsec = now.tv_usec * 1000;
+    } else {
+        return -1;
+    }
+    return 0;
+}
+#endif /* __APPLE__ */
 
 void
 xgettimeofday(struct timeval *tv)
