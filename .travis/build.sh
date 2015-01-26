@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -o errexit
+set -x
+set -o errexit 
 
 KERNELSRC=""
 CFLAGS="-Werror"
@@ -72,25 +73,33 @@ if [ "$DPDK" ]; then
     # Disregard bad function cassts until DPDK is fixed
     CFLAGS="$CFLAGS -Wno-error=bad-function-cast -Wno-error=cast-align"
     EXTRA_OPTS+="--with-dpdk=./dpdk-$DPDK_VER/build"
-elif [ $CC != "clang" ]; then
-    # DPDK headers currently trigger sparse errors
-    CFLAGS="$CFLAGS -Wsparse-error"
+    if [ "$CC" != "clang" ]; then
+        # DPDK headers currently trigger sparse errors
+        CFLAGS="$CFLAGS -Wsparse-error"
+    fi
+fi
+
+if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    EXTRA_OPTS="--with-openssl=/usr/local/opt/openssl/lib"
 fi
 
 configure_ovs $EXTRA_OPTS $*
 
 # Only build datapath if we are testing kernel w/o running testsuite
-if [ $KERNEL ] && [ ! "$TESTSUITE" ] && [ ! "$DPDK" ]; then
+if [ "$KERNEL" ] && [ ! "$TESTSUITE" ] && [ ! "$DPDK" ]; then
     cd datapath
 fi
 
-if [ $CC = "clang" ]; then
+if [ "$CC" = "clang" ]; then
     make CFLAGS="$CFLAGS -Wno-error=unused-command-line-argument"
+elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    # OSX doesn't have sparse so don't use C=1
+    make CFLAGS="$CFLAGS"
 else
     make CFLAGS="$CFLAGS" C=1
 fi
 
-if [ $TESTSUITE ] && [ $CC != "clang" ]; then
+if [ "$TESTSUITE" ] && [ "$CC" != "clang" ]; then
     if ! make distcheck; then
         # testsuite.log is necessary for debugging.
         cat */_build/tests/testsuite.log
