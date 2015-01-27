@@ -43,6 +43,22 @@ FreeBSD|NetBSD)
         sha1 "$@"
     }
     ;;
+Darwin)
+    file_mod_epoch()
+    {
+        stat -r "$1" | awk '{print $10}'
+    }
+
+    file_mod_date()
+    {
+        stat -f '%Sm' "$1"
+    }
+
+    sha1sum()
+    {
+        gsha1sum "$@"
+    }
+    ;;
 *)
     file_mod_epoch()
     {
