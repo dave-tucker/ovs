@@ -88,7 +88,7 @@ case `uname` in
 Linux)
     LOOPBACK_INTERFACE=lo
     ;;
-FreeBSD|NetBSD)
+FreeBSD|NetBSD|Darwin)
     LOOPBACK_INTERFACE=lo0
     ;;
 esac
@@ -98,14 +98,22 @@ case `uname` in
 MINGW*)
     IS_WIN32="yes"
     IS_BSD="no"
+    IS_OSX="no"
     ;;
 FreeBSD|NetBSD)
     IS_WIN32="no"
     IS_BSD="yes"
+    IS_OSX="no"
+    ;;
+Darwin)
+    IS_WIN32="no"
+    IS_BSD="no"
+    IS_OSX="yes"
     ;;
 *)
     IS_WIN32="no"
     IS_BSD="no"
+    IS_OSX="no"
     ;;
 esac
 
